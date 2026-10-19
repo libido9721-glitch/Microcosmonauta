@@ -1,198 +1,54 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#03090c">
-<title>PELAGIC — An Interactive Abyss</title>
+<title>Microcosmonauta — prototipo abisal</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@300;400;500;600&display=swap');
-:root{--ink:#03090c;--cyan:#8cf5e8;--muted:#91aaa9;--line:rgba(174,244,233,.18)}
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--ink);color:#e8f5f1;font-family:Manrope,system-ui,sans-serif}
-body{position:relative}
-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-.noise{position:absolute;inset:-50%;pointer-events:none;opacity:.07;z-index:2;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");animation:grain .24s steps(2) infinite}
-@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(2%,-1%)}50%{transform:translate(-1%,2%)}75%{transform:translate(1%,1%)}100%{transform:translate(-2%,-1%)}}
-.vignette{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 52% 48%,transparent 12%,rgba(1,6,9,.2) 53%,rgba(1,4,6,.88) 100%)}
-.ui{position:absolute;z-index:3;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(18px,3.4vw,48px);pointer-events:none}
-.top,.bottom,.hero,.right-tools{pointer-events:auto}
-.top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
-.brand{font:11px 'DM Mono',monospace;letter-spacing:.22em;color:#e6fffa}
-.brand span{display:block;color:var(--muted);letter-spacing:.13em;margin-top:9px;font-size:9px}
-.status{font:10px 'DM Mono',monospace;letter-spacing:.13em;color:#92c8c1;display:flex;align-items:center;gap:9px}
-.dot{width:5px;height:5px;background:#9cf9e7;border-radius:50%;box-shadow:0 0 12px #6fffe8;animation:pulse 2.2s infinite}
-@keyframes pulse{50%{opacity:.35;box-shadow:0 0 3px #6fffe8}}
-.hero{position:absolute;left:clamp(18px,8vw,130px);top:50%;transform:translateY(-45%);max-width:390px}
-.eyebrow{font:10px 'DM Mono',monospace;letter-spacing:.2em;color:#9fe5dc;margin-bottom:22px}
-h1{font-weight:300;letter-spacing:-.075em;font-size:clamp(58px,9vw,124px);line-height:.79;margin:0 0 28px}
-h1 em{font-style:normal;color:#8cf5e8}
-.intro{max-width:300px;font-size:13px;line-height:1.85;color:#9bb6b3;font-weight:300}
-.actions{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
-button{font:10px 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#d9f8f2;border:1px solid var(--line);background:rgba(5,20,23,.5);padding:13px 15px;cursor:pointer;transition:.25s;backdrop-filter:blur(8px)}
-button:hover,button:focus-visible{outline:none;border-color:rgba(140,245,232,.7);background:rgba(23,74,74,.35);color:#fff}
-button.primary{background:#b1fff0;color:#041012;border-color:#b1fff0}
-button.primary:hover{background:#e2fff9}
-.right-tools{position:absolute;right:clamp(18px,3.4vw,48px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px}
-.tool{width:42px;height:42px;padding:0;font-size:14px;display:grid;place-items:center}
-.bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
-.hint{font:9px 'DM Mono',monospace;letter-spacing:.12em;color:#7eaaa5;line-height:2}
-.hint b{color:#d4f9f2;font-weight:400}
-.depth{text-align:right;font:10px 'DM Mono',monospace;letter-spacing:.14em;color:#8cbcb5}
-.depth strong{display:block;font-size:23px;font-weight:400;color:#e5fffa;letter-spacing:-.04em;margin-top:6px}
-.sound{display:flex;align-items:center;gap:11px;margin-top:10px;color:#a1c8c1;font:9px 'DM Mono',monospace;letter-spacing:.1em}
-.bars{height:17px;display:flex;align-items:center;gap:2px}
-.bars i{width:2px;height:5px;background:#91f8e6;display:block;opacity:.8}
-.bars.playing i{animation:wave .7s ease-in-out infinite alternate}
-.bars i:nth-child(2n){animation-delay:.2s}.bars i:nth-child(3n){animation-delay:.4s}
-@keyframes wave{to{height:16px;opacity:.35}}
-.overlay{position:absolute;inset:0;z-index:5;background:rgba(2,8,11,.84);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:24px}
-.overlay.open{display:flex}
-.panel{width:min(560px,100%);border:1px solid var(--line);background:rgba(5,17,20,.9);padding:clamp(24px,5vw,48px);position:relative}
-.panel h2{font-size:clamp(28px,5vw,44px);font-weight:300;letter-spacing:-.05em;margin:10px 0 15px}
-.panel p{color:#9db8b4;line-height:1.8;font-size:13px}
-.close{position:absolute;right:16px;top:16px;width:36px;height:36px;padding:0}
-.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:25px}
-.panel-grid div{border-top:1px solid var(--line);padding-top:12px;font:10px 'DM Mono',monospace;color:#c7e7e1;line-height:1.8}
-.panel-grid span{display:block;color:#70958f;font-size:9px;letter-spacing:.12em;margin-bottom:5px}
-#file{display:none}
-.toast{position:absolute;z-index:6;left:50%;bottom:85px;transform:translate(-50%,10px);opacity:0;transition:.3s;pointer-events:none;font:10px 'DM Mono',monospace;letter-spacing:.08em;background:rgba(4,21,23,.88);border:1px solid var(--line);padding:12px 16px;color:#d9fff7;text-align:center}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:650px){.ui{padding:20px}.hero{top:43%;left:22px;right:22px;transform:translateY(-20%)}h1{font-size:clamp(66px,19vw,100px)}.intro{max-width:250px;font-size:12px}.right-tools{right:18px;top:auto;bottom:100px;transform:none}.tool{width:38px;height:38px}.hint{max-width:210px;font-size:8px}.status{font-size:8px}.bottom{align-items:flex-end}.depth strong{font-size:18px}.top{align-items:center}.panel-grid{grid-template-columns:1fr 1fr}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+:root{--cyan:#8cf5e8;--line:rgba(174,244,233,.22)}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#03090c;color:#e8f5f1;font-family:Manrope,system-ui,sans-serif;touch-action:none}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 52% 48%,transparent 12%,rgba(1,6,9,.2) 53%,rgba(1,4,6,.88) 100%)}
+.ui{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(18px,3.4vw,48px);pointer-events:none}.top,.bottom,.hero,.tools{pointer-events:auto}
+.top{display:flex;justify-content:space-between;gap:12px}.brand,.status,.eyebrow,.hint,.depth,.sound,button{font-family:'DM Mono',monospace;letter-spacing:.12em}.brand{font-size:11px}.brand span{display:block;font-size:9px;color:#91aaa9;margin-top:8px}.status{font-size:9px;color:#9fe5dc}.dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--cyan);margin-right:8px;box-shadow:0 0 10px var(--cyan)}
+.hero{position:absolute;left:clamp(20px,6vw,90px);top:50%;transform:translateY(-40%);max-width:340px}.eyebrow{font-size:9px;color:#9fe5dc;margin-bottom:20px}h1{font-size:clamp(54px,8vw,100px);font-weight:300;letter-spacing:-.075em;line-height:.83;margin:0 0 24px}h1 em{font-style:normal;color:var(--cyan)}.intro{font-size:12px;line-height:1.85;color:#9bb6b3;max-width:275px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}button{font-size:9px;color:#d9f8f2;border:1px solid var(--line);background:rgba(5,20,23,.72);padding:13px 12px;cursor:pointer}button.primary{background:#b1fff0;color:#041012;border-color:#b1fff0}.tools{position:absolute;right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px}.tool{width:39px;height:39px;padding:0;font-size:15px}
+.bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}.hint{font-size:8px;line-height:2;color:#7eaaa5}.hint b{color:#d4f9f2;font-weight:400}.depth{text-align:right;font-size:9px;color:#8cbcb5}.depth strong{display:block;font-size:18px;font-weight:400;color:#e5fffa;margin-top:6px}.sound{display:flex;align-items:center;justify-content:flex-end;gap:8px;font-size:8px;margin-top:8px;color:#a1c8c1}.bars{display:flex;gap:2px;align-items:center;height:15px}.bars i{display:block;width:2px;height:5px;background:var(--cyan)}.bars.playing i{animation:wave .6s ease-in-out infinite alternate}.bars i:nth-child(2n){animation-delay:.2s}.bars i:nth-child(3n){animation-delay:.35s}@keyframes wave{to{height:14px;opacity:.4}}
+.toast{position:absolute;left:50%;bottom:80px;transform:translateX(-50%);background:#07191d;border:1px solid var(--line);padding:10px 13px;font:9px 'DM Mono',monospace;opacity:0;transition:opacity .2s;pointer-events:none;text-align:center}.toast.show{opacity:1}
+@media(max-width:650px){.ui{padding:20px}.hero{top:43%;left:21px;right:68px;transform:translateY(-18%)}h1{font-size:clamp(56px,15vw,84px)}.intro{font-size:11px;max-width:230px}.tools{top:auto;bottom:112px;transform:none;right:15px}.tool{width:35px;height:35px}.hint{max-width:170px}.status{font-size:8px}.depth strong{font-size:16px}}
 </style>
 </head>
 <body>
-<canvas id="world" aria-label="Paisaje abisal interactivo"></canvas>
-<div class="vignette"></div><div class="noise"></div>
+<canvas id="world" aria-label="Organismo abisal; pellizca con dos dedos para hacer zoom"></canvas><div class="vignette"></div>
 <div class="ui">
-  <header class="top">
-    <div class="brand">PELAGIC / 001<span>AN INTERACTIVE ABYSS</span></div>
-    <div class="status"><span class="dot"></span><span id="state">SYSTEM ALIVE</span></div>
-  </header>
-  <main class="hero">
-    <div class="eyebrow">FIELD NOTE — 0001 / BELOW THE SURFACE</div>
-    <h1>Enter the<br><em>abyss.</em></h1>
-    <div class="intro">Un ecosistema que respira en la oscuridad. Muévete despacio. Perturba la materia. Escucha lo que vive debajo.</div>
-    <div class="actions">
-      <button class="primary" id="descend">Descender ↘</button>
-      <button id="soundToggle">Activar sonido ◖</button>
-    </div>
-  </main>
-  <nav class="right-tools" aria-label="Controles de la experiencia">
-    <button class="tool" id="resonate" title="Resonar (espacio)" aria-label="Resonar">◎</button>
-    <button class="tool" id="organism" title="Cambiar organismo" aria-label="Cambiar organismo">⁕</button>
-    <button class="tool" id="info" title="Acerca de" aria-label="Acerca de">i</button>
-  </nav>
-  <footer class="bottom">
-    <div class="hint"><b>MOVE</b> disturb the field<br><b>CLICK</b> send a pulse · <b>SPACE</b> resonate</div>
-    <div class="depth">DEPTH / <span id="depthLabel">000 M</span><strong id="depth">−000 m</strong><div class="sound"><span class="bars" id="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span id="soundLabel">SOUND OFFLINE</span></div></div>
-  </footer>
-</div>
-<div class="overlay" id="overlay">
- <section class="panel">
-  <button class="close" id="close" aria-label="Cerrar">×</button>
-  <div class="eyebrow">PELAGIC / RESEARCH LOG</div>
-  <h2>A living instrument.</h2>
-  <p>PELAGIC es un prototipo de un mundo audiovisual original. La luz, los filamentos y las partículas responden a tu presencia. El sonido que escuchas es una síntesis generativa temporal; aquí podremos integrar tus demos y vincular su energía con el movimiento visual.</p>
-  <div class="panel-grid">
-   <div><span>01 / EXPLORAR</span>Mueve el cursor para desplazar la corriente.</div>
-   <div><span>02 / PERTURBAR</span>Haz clic o pulsa espacio para emitir una onda.</div>
-   <div><span>03 / DESCENDER</span>Usa el botón para cambiar la profundidad y la paleta.</div>
-   <div><span>04 / ESCUCHAR</span>Activa el paisaje sonoro generativo.</div>
-  </div>
-  <div class="actions"><button id="upload">Cargar una demo de audio</button><button id="back" class="primary">Volver al abismo</button></div>
-  <input id="file" type="file" accept="audio/*">
- </section>
-</div>
-<div class="toast" id="toast">PULSO ENVIADO</div>
+<header class="top"><div class="brand">MICROCOSMONAUTA / 001<span>PROTOTIPO ABISAL INTERACTIVO</span></div><div class="status"><span class="dot"></span><span id="state">SISTEMA ACTIVO</span></div></header>
+<main class="hero"><div class="eyebrow" id="eyebrow">BITÁCORA — 0001 / BAJO LA SUPERFICIE</div><h1>Explora el<br><em>abismo.</em></h1><div class="intro">Un organismo que respira en la oscuridad. Muévete despacio. Perturba la materia. Escucha lo que vive debajo.</div><div class="actions"><button class="primary" id="descend">Descender ↘</button><button id="soundToggle">Activar sonido ◖</button></div></main>
+<nav class="tools" aria-label="Controles visuales"><button class="tool" id="pulse" aria-label="Enviar pulso">◎</button><button class="tool" id="organism" aria-label="Cambiar organismo">⁕</button><button class="tool" id="zoomOut" aria-label="Alejar">−</button><button class="tool" id="zoomIn" aria-label="Acercar">+</button><button class="tool" id="resetZoom" aria-label="Restablecer zoom">↺</button></nav>
+<footer class="bottom"><div class="hint"><b>TOCAR / ARRASTRAR</b> perturba el campo<br><b>PELLIZCAR</b> zoom · <b>TOCAR</b> pulso</div><div class="depth">PROFUNDIDAD / <span id="depthLabel">000 M</span><strong id="depth">−000 m</strong><div class="sound"><span class="bars" id="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span id="soundLabel">SONIDO APAGADO</span></div></div></footer></div><div class="toast" id="toast"></div>
+<audio id="demoAudio" src="Robin%20Hood.m4a" preload="none" loop></audio>
 <script>
-(() => {
- const canvas=document.getElementById('world'),ctx=canvas.getContext('2d',{alpha:false});
- const $=id=>document.getElementById(id);
- let w=0,h=0,dpr=1,t=0,depth=0,organism=0,pulse=0,particles=[],threads=[],ripples=[];
- let pointer={x:.5,y:.5,px:.5,py:.5,active:false};
- let audioCtx=null,master=null,oscillators=[],soundOn=false,uploadedAudio=null,uploadedUrl=null,analyser=null,frequencyData=null;
- const palettes=[
-  {a:[92,255,226],b:[39,127,143],c:[113,98,202]},
-  {a:[134,237,255],b:[52,133,183],c:[186,113,218]},
-  {a:[171,255,194],b:[42,145,112],c:[103,180,211]}
- ];
- let palette=palettes[0];
- function resize(){dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);makeParticles();makeThreads()}
- function rand(a,b){return a+Math.random()*(b-a)}
- function makeParticles(){particles=Array.from({length:Math.min(600,Math.floor(w*h/1900))},()=>({x:Math.random()*w,y:Math.random()*h,z:rand(.2,1),r:rand(.35,1.8),phase:rand(0,6.28),speed:rand(.1,.7)}))}
- function makeThreads(){threads=Array.from({length:organism===0?13:organism===1?23:8},(_,i)=>({x:w*(.28+Math.random()*.5),y:h*(.2+Math.random()*.55),len:rand(.14,.42)*h,phase:rand(0,6.28),freq:rand(.005,.016),width:rand(.7,2.2),side:Math.random()>.5?1:-1,seed:rand(0,10)}))}
- function color(c,a=1){return `rgba(${c[0]},${c[1]},${c[2]},${a})`}
- function glow(x,y,r,c,a){let g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,color(c,a));g.addColorStop(.35,color(c,a*.25));g.addColorStop(1,color(c,0));ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
- function emit(x=pointer.x*w,y=pointer.y*h,big=false){ripples.push({x,y,r:2,life:1,speed:big?3.2:1.8});pulse=1; if(ripples.length>16)ripples.shift(); if(soundOn)tone(big?115:180,.25,big?.16:.07)}
- function drawOrganism(now){
-  const cx=w*(.55+(pointer.x-.5)*.08),cy=h*(.51+(pointer.y-.5)*.07),scale=Math.min(w,h)*(.18+Math.sin(now*.00035)*.012);
-  ctx.save();ctx.translate(cx,cy);ctx.rotate(Math.sin(now*.00017)*.08);
-  const col=palette.a,co=palette.b,cc=palette.c;
-  glow(0,0,scale*2.3,co,.09+.04*Math.sin(now*.001));
-  // translucent bell / core
-  let grad=ctx.createRadialGradient(-scale*.16,-scale*.22,scale*.02,0,0,scale*.8);
-  grad.addColorStop(0,color(col,.13));grad.addColorStop(.4,color(co,.07));grad.addColorStop(1,color(cc,0));
-  ctx.fillStyle=grad;ctx.beginPath();ctx.ellipse(0,-scale*.1,scale*.48,scale*.64,Math.sin(now*.0004)*.12,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle=color(col,.26);ctx.lineWidth=1;
-  ctx.beginPath();ctx.ellipse(0,-scale*.1,scale*.48,scale*.64,Math.sin(now*.0004)*.12,0,Math.PI*2);ctx.stroke();
-  for(let i=0;i<7;i++){let a=i*Math.PI*2/7+now*.00012;let x=Math.cos(a)*scale*.27,y=Math.sin(a)*scale*.37-scale*.12;glow(x,y,scale*.13,i%2?co:col,.28);ctx.fillStyle=color(col,.18);ctx.beginPath();ctx.arc(x,y,scale*.025,0,Math.PI*2);ctx.fill()}
-  // long living filaments
-  let count=organism===0?11:organism===1?18:7;
-  for(let i=0;i<count;i++){
-   const a=(i/count)*Math.PI*2+Math.sin(now*.00015+i)*.17;
-   const startX=Math.cos(a)*scale*.24,startY=Math.sin(a)*scale*.34+scale*.12;
-   const length=scale*(.8+.5*(.5+.5*Math.sin(now*.0007+i*2)));
-   ctx.beginPath();ctx.moveTo(startX,startY);
-   for(let j=1;j<=24;j++){let q=j/24;let sway=Math.sin(now*.00055+i*.7+q*5)*scale*.08*q+Math.sin(q*11+i)*scale*.018;ctx.lineTo(startX+Math.cos(a)*length*q+Math.cos(a+1.57)*sway,startY+Math.sin(a)*length*q+Math.sin(a+1.57)*sway)}
-   ctx.strokeStyle=color(i%4===0?cc:col,.09+.16*(.5+.5*Math.sin(now*.001+i)));ctx.lineWidth=(1-qSafe(i,count))*2+.35;ctx.stroke();
-   let tipX=startX+Math.cos(a)*length+Math.cos(a+1.57)*Math.sin(now*.00055+i*.7)*scale*.08;
-   let tipY=startY+Math.sin(a)*length+Math.sin(a+1.57)*Math.sin(now*.00055+i*.7)*scale*.08;
-   glow(tipX,tipY,scale*.045,col,.45);
-  }
-  // inner rings
-  for(let j=0;j<3;j++){ctx.beginPath();ctx.ellipse(0,-scale*.1,scale*(.25+j*.13),scale*(.34+j*.13),now*.0001*(j+1),.2,Math.PI*1.8);ctx.strokeStyle=color(j===1?cc:col,.12-j*.025);ctx.lineWidth=.7;ctx.stroke()}
-  ctx.restore();
- }
- function qSafe(i,n){return Math.max(.12,1-i/n)}
- function render(now){
-  t=now;ctx.fillStyle='#03090c';ctx.fillRect(0,0,w,h);
-  let bg=ctx.createRadialGradient(w*.56,h*.5,0,w*.56,h*.5,Math.max(w,h)*.75);bg.addColorStop(0,'#0b2025');bg.addColorStop(.45,'#061217');bg.addColorStop(1,'#020609');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
-  // drifting volumetric columns
-  for(let i=0;i<7;i++){let x=w*(.12+i*.13)+Math.sin(now*.00013+i*3)*w*.035;let g=ctx.createLinearGradient(x,0,x+Math.sin(now*.0002+i)*70,h);g.addColorStop(0,'rgba(75,193,180,0)');g.addColorStop(.45,`rgba(48,135,142,${.012+.014*Math.sin(now*.0004+i)})`);g.addColorStop(1,'rgba(22,78,89,0)');ctx.fillStyle=g;ctx.fillRect(x-45,0,110,h)}
-  particles.forEach(p=>{p.y-=p.speed*(.3+depth*.03);p.x+=Math.sin(now*.00025+p.phase)*.16+(pointer.x-.5)*p.z*.23;if(p.y<-5){p.y=h+5;p.x=Math.random()*w}if(p.x<-5)p.x=w+5;if(p.x>w+5)p.x=-5;let d=Math.hypot(p.x-pointer.x*w,p.y-pointer.y*h);let push=Math.max(0,1-d/150);ctx.beginPath();ctx.arc(p.x+Math.sin(now*.001+p.phase)*push*8,p.y,p.r*p.z,0,Math.PI*2);ctx.fillStyle=color(p.phase%2?palette.a:palette.b,.12+p.z*.3+push*.35);ctx.fill();if(p.z>.82&&Math.sin(now*.0007+p.phase)>.94)glow(p.x,p.y,10,palette.a,.1)});
-  drawOrganism(now);
-  // fine web strands, sway with cursor
-  threads.forEach((th,i)=>{let x=th.x+(pointer.x-.5)*w*.045;ctx.beginPath();for(let j=0;j<=32;j++){let q=j/32;let yy=th.y+q*th.len;let xx=x+Math.sin(now*th.freq+th.phase+q*5)*w*.018*q+Math.cos(q*8+th.seed)*w*.006*q;if(j===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy)}ctx.strokeStyle=color(i%3===0?palette.c:palette.b,.06+.035*Math.sin(now*.0006+i));ctx.lineWidth=th.width*.55;ctx.stroke()});
-  // pointer aura
-  if(pointer.active){glow(pointer.x*w,pointer.y*h,130,palette.a,.10);ctx.beginPath();ctx.arc(pointer.x*w,pointer.y*h,18+Math.sin(now*.006)*3,0,Math.PI*2);ctx.strokeStyle=color(palette.a,.2);ctx.lineWidth=.7;ctx.stroke()}
-  ripples=ripples.filter(r=>r.life>0);ripples.forEach(r=>{ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.strokeStyle=color(palette.a,r.life*.42);ctx.lineWidth=1.1;ctx.stroke();r.r+=r.speed;r.life-=.008+r.r*.00003});
-  // subtle pulse screen illumination
-  if(pulse>.01){glow(w*.5,h*.5,Math.max(w,h)*.7,palette.a,pulse*.035);pulse*=.96}
-  if(analyser&&frequencyData){analyser.getByteFrequencyData(frequencyData);let avg=frequencyData.reduce((a,b)=>a+b,0)/frequencyData.length/255;if(avg>.01){ctx.strokeStyle=color(palette.a,.09+avg*.15);ctx.lineWidth=1;ctx.beginPath();for(let i=0;i<100;i++){let a=i/100*Math.PI*2;let rr=Math.min(w,h)*(.22+avg*.06)+frequencyData[i%frequencyData.length]*.06;let x=w*.56+Math.cos(a)*rr,y=h*.51+Math.sin(a)*rr;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.closePath();ctx.stroke()}}
-  requestAnimationFrame(render)
- }
- function initAudio(){if(audioCtx)return;audioCtx=new(window.AudioContext||window.webkitAudioContext)();master=audioCtx.createGain();master.gain.value=.22;analyser=audioCtx.createAnalyser();analyser.fftSize=256;frequencyData=new Uint8Array(analyser.frequencyBinCount);master.connect(analyser);analyser.connect(audioCtx.destination);
-  // quiet generative drone with slow filter movement
-  const low=audioCtx.createOscillator(),high=audioCtx.createOscillator(),gain=audioCtx.createGain(),filter=audioCtx.createBiquadFilter(),lfo=audioCtx.createOscillator(),lfoGain=audioCtx.createGain();
-  low.type='sine';low.frequency.value=48;high.type='sine';high.frequency.value=72.2;gain.gain.value=.09;filter.type='lowpass';filter.frequency.value=350;filter.Q.value=.7;lfo.frequency.value=.08;lfoGain.gain.value=180;lfo.connect(lfoGain);lfoGain.connect(filter.frequency);low.connect(filter);high.connect(filter);filter.connect(gain);gain.connect(master);low.start();high.start();lfo.start();oscillators=[low,high,lfo];}
- function tone(freq,dur,vol){if(!audioCtx||!soundOn)return;let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.setValueAtTime(freq,audioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(freq*.55,audioCtx.currentTime+dur);g.gain.setValueAtTime(.0001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(vol,audioCtx.currentTime+.025);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+dur);o.connect(g);g.connect(master);o.start();o.stop(audioCtx.currentTime+dur+.05)}
- function toggleSound(){if(!soundOn){initAudio();audioCtx.resume();soundOn=true;$('soundToggle').textContent='Silenciar sound ×';$('soundLabel').textContent='GENERATIVE SOUND';$('bars').classList.add('playing');$('state').textContent='SOUND ONLINE';if(uploadedAudio){uploadedAudio.play().catch(()=>{});}}else{soundOn=false;if(audioCtx)audioCtx.suspend();if(uploadedAudio)uploadedAudio.pause();$('soundToggle').textContent='Activar sonido ◖';$('soundLabel').textContent='SOUND OFFLINE';$('bars').classList.remove('playing');$('state').textContent='SYSTEM ALIVE'}}
- function descend(){depth=(depth+1)%6;palette=palettes[depth%palettes.length];makeThreads();emit(w*.55,h*.52,true);$('depth').textContent='−'+String(depth*640).padStart(3,'0')+' m';$('depthLabel').textContent=String(depth*640).padStart(3,'0')+' M';$('eyebrow').textContent=['FIELD NOTE — 0001 / BELOW THE SURFACE','FIELD NOTE — 0002 / THE DRIFT','FIELD NOTE — 0003 / BIO-LUMINESCENCE','FIELD NOTE — 0004 / PRESSURE','FIELD NOTE — 0005 / THE DEEP SIGNAL','FIELD NOTE — 0006 / NO RETURN'][depth];$('state').textContent='DEPTH SHIFT / '+depth}
- function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1300)}
- canvas.addEventListener('pointermove',e=>{pointer.px=pointer.x;pointer.py=pointer.y;pointer.x=e.clientX/w;pointer.y=e.clientY/h;pointer.active=true});
- canvas.addEventListener('pointerleave',()=>pointer.active=false);
- canvas.addEventListener('pointerdown',e=>{pointer.x=e.clientX/w;pointer.y=e.clientY/h;emit(e.clientX,e.clientY);});
- $('descend').addEventListener('click',descend);$('soundToggle').addEventListener('click',toggleSound);
- $('resonate').addEventListener('click',()=>{emit(w*.55,h*.5,true);toast('RESONANCE / FIELD DISTURBED')});
- $('organism').addEventListener('click',()=>{organism=(organism+1)%3;makeThreads();emit(w*.55,h*.5);toast(['ORGANISM / MEDUSA','ORGANISM / FILAMENT','ORGANISM / SPORE'][organism])});
- $('info').addEventListener('click',()=>$('overlay').classList.add('open'));$('close').addEventListener('click',()=>$('overlay').classList.remove('open'));$('back').addEventListener('click',()=>$('overlay').classList.remove('open'));
- $('upload').addEventListener('click',()=>$('file').click());
- $('file').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;if(uploadedUrl)URL.revokeObjectURL(uploadedUrl);uploadedUrl=URL.createObjectURL(f);if(uploadedAudio){uploadedAudio.pause();uploadedAudio.remove()}uploadedAudio=new Audio(uploadedUrl);uploadedAudio.loop=true;uploadedAudio.volume=.8;uploadedAudio.addEventListener('play',()=>{$('soundLabel').textContent='YOUR DEMO / PLAYING'});if(soundOn)uploadedAudio.play().catch(()=>{});else{toggleSound();uploadedAudio.play().catch(()=>{})}$('overlay').classList.remove('open');toast('DEMO LOADED / '+f.name.toUpperCase().slice(0,24))});
- document.addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();emit(w*.55,h*.5,true);toast('RESONANCE / FIELD DISTURBED')}if(e.key==='Escape')$('overlay').classList.remove('open');if(e.key.toLowerCase()==='d')descend();if(e.key.toLowerCase()==='m')toggleSound()});
- window.addEventListener('resize',resize);resize();requestAnimationFrame(render);
-})();
+(()=>{const c=document.querySelector('#world'),x=c.getContext('2d'),$=id=>document.getElementById(id);let w,h,dpr=1,zoom=.68,depth=0,kind=0,parts=[],threads=[],ripples=[],active=new Map(),pinchDist=0,pinchZoom=zoom,px=.5,py=.5,sound=false;const audio=$('demoAudio');audio.volume=.75;const pals=[[[92,255,226],[39,127,143],[113,98,202]],[[134,237,255],[52,133,183],[186,113,218]],[[171,255,194],[42,145,112],[103,180,211]]];let pal=pals[0];
+const rnd=(a,b)=>a+Math.random()*(b-a),col=(v,a)=>`rgba(${v[0]},${v[1]},${v[2]},${a})`;
+function resize(){dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;c.width=w*dpr;c.height=h*dpr;x.setTransform(dpr,0,0,dpr,0,0);parts=Array.from({length:Math.min(500,w*h/2000)},()=>({x:Math.random()*w,y:Math.random()*h,z:rnd(.3,1),r:rnd(.4,1.6),p:rnd(0,7),s:rnd(.15,.65)}));threads=Array.from({length:kind===0?12:kind===1?20:7},()=>({x:rnd(w*.3,w*.7),y:rnd(h*.25,h*.6),l:rnd(h*.15,h*.4),p:rnd(0,7)}))}
+function glow(a,b,r,color,alpha){let g=x.createRadialGradient(a,b,0,a,b,r);g.addColorStop(0,col(color,alpha));g.addColorStop(1,col(color,0));x.fillStyle=g;x.beginPath();x.arc(a,b,r,0,7);x.fill()}
+function emit(a=px*w,b=py*h){ripples.push({x:a,y:b,r:2,life:1});if(ripples.length>15)ripples.shift();if(sound&&audio.paused){/* visual pulses stay independent */}}
+function draw(now){x.fillStyle='#03090c';x.fillRect(0,0,w,h);let bg=x.createRadialGradient(w*.55,h*.5,0,w*.55,h*.5,Math.max(w,h)*.8);bg.addColorStop(0,'#0b2025');bg.addColorStop(1,'#020609');x.fillStyle=bg;x.fillRect(0,0,w,h);
+parts.forEach(p=>{p.y-=p.s*.45;if(p.y<0)p.y=h;x.beginPath();x.arc(p.x+Math.sin(now*.0003+p.p)*5,p.y,p.r*p.z,0,7);x.fillStyle=col(p.p%2?pal[0]:pal[1],.15+p.z*.25);x.fill()});
+let cx=w*.56+(px-.5)*w*.025,cy=h*.52+(py-.5)*h*.025,s=Math.min(w,h)*.19*zoom;x.save();x.translate(cx,cy);x.rotate(Math.sin(now*.00017)*.07);glow(0,0,s*2.3,pal[1],.16);x.beginPath();x.ellipse(0,-s*.1,s*.48,s*.64,0,0,7);x.fillStyle=col(pal[0],.06);x.fill();x.strokeStyle=col(pal[0],.3);x.stroke();
+for(let i=0;i<7;i++){let a=i*7/7+now*.0001,xx=Math.cos(a)*s*.25,yy=Math.sin(a)*s*.3;glow(xx,yy,s*.12,pal[0],.25)}
+for(let i=0;i<(kind===0?12:kind===1?19:7);i++){let a=i/(kind===0?12:kind===1?19:7)*Math.PI*2+Math.sin(now*.00015+i)*.15,sx=Math.cos(a)*s*.2,sy=Math.sin(a)*s*.3,len=s*(.8+.4*(.5+.5*Math.sin(now*.0007+i)));x.beginPath();x.moveTo(sx,sy);for(let j=1;j<=28;j++){let q=j/28,sw=Math.sin(now*.0005+i+q*5)*s*.08*q;x.lineTo(sx+Math.cos(a)*len*q+Math.cos(a+1.57)*sw,sy+Math.sin(a)*len*q+Math.sin(a+1.57)*sw)}x.strokeStyle=col(i%4===0?pal[2]:pal[0],.12+.12*(.5+.5*Math.sin(now*.001+i)));x.lineWidth=Math.max(.5,1.8*(1-i/24));x.stroke()}for(let j=0;j<3;j++){x.beginPath();x.ellipse(0,-s*.1,s*(.25+j*.13),s*(.34+j*.13),now*.0001*(j+1),0,5.5);x.strokeStyle=col(pal[2],.13);x.stroke()}x.restore();
+threads.forEach((t,i)=>{x.beginPath();for(let j=0;j<=30;j++){let q=j/30,xx=t.x+Math.sin(now*.0005+t.p+q*5)*w*.012*q,yy=t.y+q*t.l;if(j===0)x.moveTo(xx,yy);else x.lineTo(xx,yy)}x.strokeStyle=col(pal[1],.08);x.lineWidth=.7;x.stroke()});
+ripples=ripples.filter(r=>r.life>0);ripples.forEach(r=>{x.beginPath();x.arc(r.x,r.y,r.r,0,7);x.strokeStyle=col(pal[0],r.life*.5);x.stroke();r.r+=2;r.life-=.018});requestAnimationFrame(draw)}
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1200)}
+function setZoom(z){zoom=Math.max(.35,Math.min(2.2,z));toast('ZOOM '+Math.round(zoom*100)+'%')}
+$('zoomIn').onclick=()=>setZoom(zoom*1.2);$('zoomOut').onclick=()=>setZoom(zoom/1.2);$('resetZoom').onclick=()=>setZoom(.68);$('pulse').onclick=()=>{emit();toast('PULSO ENVIADO')};$('organism').onclick=()=>{kind=(kind+1)%3;resize();emit();toast('ORGANISMO '+(kind+1))};
+$('descend').onclick=()=>{depth=(depth+1)%6;pal=pals[depth%3];$('depth').textContent='−'+String(depth*640).padStart(3,'0')+' m';$('depthLabel').textContent=String(depth*640).padStart(3,'0')+' M';$('eyebrow').textContent='BITÁCORA — '+String(depth+1).padStart(4,'0')+' / BAJO LA SUPERFICIE';emit()};
+$('soundToggle').onclick=()=>{if(!sound){sound=true;audio.play().then(()=>{$('soundToggle').textContent='Silenciar sonido ×';$('soundLabel').textContent='ROBIN HOOD / EN BUCLE';$('bars').classList.add('playing');$('state').textContent='AUDIO ACTIVO'}).catch(()=>{sound=false;$('state').textContent='TOCA PARA REPRODUCIR';toast('Toca otra vez para iniciar el audio')})}else{sound=false;audio.pause();$('soundToggle').textContent='Activar sonido ◖';$('soundLabel').textContent='SONIDO APAGADO';$('bars').classList.remove('playing');$('state').textContent='SISTEMA ACTIVO'}};
+c.addEventListener('pointerdown',e=>{c.setPointerCapture(e.pointerId);active.set(e.pointerId,{x:e.clientX,y:e.clientY});px=e.clientX/w;py=e.clientY/h;if(active.size===1)emit(e.clientX,e.clientY);if(active.size===2){let a=[...active.values()];pinchDist=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);pinchZoom=zoom}});
+c.addEventListener('pointermove',e=>{if(active.has(e.pointerId)){active.set(e.pointerId,{x:e.clientX,y:e.clientY});if(active.size===2){let a=[...active.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(pinchDist)zoom=Math.max(.35,Math.min(2.2,pinchZoom*d/pinchDist))}}px=e.clientX/w;py=e.clientY/h});
+function up(e){active.delete(e.pointerId)}c.addEventListener('pointerup',up);c.addEventListener('pointercancel',up);c.addEventListener('wheel',e=>{e.preventDefault();setZoom(zoom*(e.deltaY<0?1.08:.92))},{passive:false});window.addEventListener('resize',resize);resize();requestAnimationFrame(draw)})();
 </script>
 </body>
 </html>
