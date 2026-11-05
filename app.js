@@ -9,7 +9,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 // ---------------------------------------------------------------- datos
 
 // Track 01: audio supplied by the creator; the file input can replace it during testing.
-window.microTrack01Url = new URL('./assets/audio/track-01.m4a', import.meta.url).href;
+window.microTrack01Url = new URL('./track-01.m4a', import.meta.url).href;
 
 const TRACKS = [
   { id: '01-melanocetus', n: '01', name: 'Melanocetus' },
@@ -245,7 +245,7 @@ const fishFrag = `
   }`;
 
 async function loadFish(id) {
-  const buf = await (await fetch(`./assets/creatures/${id}.bin`)).arrayBuffer();
+  const buf = await (await fetch(`./${id}.bin`)).arrayBuffer();
   const n = new Uint32Array(buf, 0, 1)[0];
   let o = 4;
   const pb = new Int16Array(buf, o, n * 3); o += n * 6;

@@ -1,16 +1,17 @@
-MICROCOSMONAUTA — TRAUMDEUTER / PROTOTIPO 01
+MICROCOSMONAUTA — TRAUMDEUTER / PAQUETE DE ARCHIVOS SUELTOS
 
-Identidad de cabecera: Microcosmonauta. Título de la experiencia: Traumdeuter.
+Este paquete contiene los archivos de la experiencia en un solo nivel, sin carpeta assets.
+El código app.js ha sido adaptado para cargar los seis archivos BIN y track-01.m4a desde esa misma ubicación.
 
-Incluye los seis organismos en formato BIN, la experiencia interactiva adaptada, controles A/S/D/F, selector EN / ES / DE y el primer audio aportado por la creadora, asignado al organismo 01 (Melanocetus). Los tracks 02–06 quedan preparados para incorporar los audios cuando estén grabados.
+CONTENIDO
+- index.html
+- app.js
+- style.css
+- obra-expandida.js
+- seis archivos .bin (organismos)
+- track-01.m4a (audio del primer track)
 
-El botón “Replace Track 01 audio” permite sustituir el primer archivo durante las pruebas.
+IMPORTANTE PARA PUBLICAR EN EL REPOSITORIO ACTUAL
+Para que GitHub Pages muestre esta versión en la dirección principal, estos archivos deben quedar juntos en la carpeta que publica GitHub Pages. Los archivos index.html, app.js, style.css y obra-expandida.js reemplazarán los de igual nombre que ya estén allí. Los seis .bin y track-01.m4a se añadirán como archivos nuevos.
 
-CÓMO PROBAR
-Este prototipo usa módulos JavaScript y archivos BIN locales; debe abrirse desde un servidor web, no directamente como archivo local. No se ha publicado ni subido al repositorio.
-
-PENDIENTE
-- Confirmar los nombres definitivos de las criaturas y tracks de Microcosmonauta.
-- Incorporar los cinco audios restantes cuando estén listos.
-- Completar About y los enlaces musicales.
-- Verificar compatibilidad y permisos de reutilización antes de publicar.
+No subas este ZIP como ZIP: descomprímelo primero. Este paquete no se ha publicado automáticamente.
