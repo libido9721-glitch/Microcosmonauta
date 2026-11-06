@@ -8,12 +8,13 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 // ---------------------------------------------------------------- datos
 
-// Track 01: audio supplied by the creator; the file input can replace it during testing.
-window.microTrack01Url = new URL('./track-01.m4a', import.meta.url).href;
+// Audio ya existente de la criatura 01 y nuevo audio de la criatura 02.
+window.microTrack01Url = new URL('./Robin%20Hood.m4a', import.meta.url).href;
+window.microTrack02Url = new URL('./Traumdeuter.m4a', import.meta.url).href;
 
 const TRACKS = [
   { id: '01-melanocetus', n: '01', name: 'Robin Hood' },
-  { id: '02-paucovertebratis', n: '02', name: 'paucovertebratis' },
+  { id: '02-paucovertebratis', n: '02', name: 'Traumdeuter' },
   { id: '03-saccopharynx', n: '03', name: 'Saccopharynx' },
   { id: '04-eurypharynx', n: '04', name: 'Eurypharynx' },
   { id: '05-chauliodus', n: '05', name: 'Chauliodus' },
@@ -31,13 +32,13 @@ window.fgObra?.i18n({
   es: { makeYours: 'Haz tu propia criatura', loadFail: 'no se pudo cargar',
         webm: 'Este navegador graba en WebM: Instagram no lo acepta, conviértelo o graba desde Chrome/Safari reciente. ' },
   en: { soon: 'soon', back: 'Back', fxMirror: 'mirror', fxEdges: 'edges', yours: 'Your creature', keep: 'Keep playing',
-        introT: 'An expanded audiovisual experience by Microcosmonauta',
+        introT: 'An expanded audiovisual experience by Mikrokosmonaut',
         introLead: 'In the deep it is always night. Light comes from its creatures when they let themselves be seen.',
         introTouch: 'Touch a creature: its song plays and you enter its visual.',
         introDesk: 'Drag to look around and swim with the wheel or the arrow keys. Inside: move the cursor, press and hold, drag.',
         introPads: 'mirror · feedback · glitch · edges',
         introMobile: 'Drag to look around and pinch to swim. Inside: swipe, keep your finger still and turn on the effects.',
-        introRec: 'Record what you make <span class="desk">with <kbd>R</kbd></span> and share it tagging Microcosmonauta',
+        introRec: 'Record what you make <span class="desk">with <kbd>R</kbd></span> and share it tagging Mikrokosmonaut',
         enter: 'Enter', loading: 'loading specimens', loadFail: 'could not load', makeYours: 'Make your own creature',
         webm: 'This browser records in WebM, which Instagram doesn’t accept: convert it or record from a recent Chrome or Safari. ' },
   de: { soon: 'demnächst', back: 'Zurück', fxMirror: 'Spiegel', fxEdges: 'Konturen', yours: 'Deine Kreatur', keep: 'Weiter erkunden',
@@ -201,13 +202,18 @@ resize();
 
 const fishVert = `
   attribute vec3 aPos2; attribute vec3 aCol2;
-  uniform float uMorph, uTime, uKick, uWave, uSwim, uTurn, uGlitch, uSize, uPix, uSleep, uScan, uScanAmt, uVis, uLens, uAspect;
+  uniform float uMorph, uTime, uKick, uWave, uSwim, uTurn, uGlitch, uSize, uPix, uSleep, uScan, uScanAmt, uVis, uLens, uAspect, uGreen;
   uniform vec2 uMouse;
   varying vec3 vCol;
   float hash(float n){ return fract(sin(n) * 43758.5453); }
   void main(){
     vec3 p = mix(position, aPos2, uMorph);
     vec3 c = mix(color, aCol2, uMorph);
+    // Matiz verde petróleo/turquesa y bioluminiscente solo para la criatura 01.
+    vec3 petroleum = vec3(c.r * 0.82 + c.g * 0.04, max(c.g * 0.94, c.b * 0.55), c.b * 0.90);
+    float bioGlow = smoothstep(0.38, 0.82, max(c.r, max(c.g, c.b)));
+    petroleum += vec3(0.025, 0.10, 0.035) * bioGlow;
+    c = mix(c, petroleum, uGreen);
     // barrido de escáner: dentro de la banda se ve el esqueleto, encendido
     float sb = (1.0 - smoothstep(0.0, 0.09, abs(position.x - uScan))) * uScanAmt;
     p = mix(p, aPos2, sb);
@@ -245,8 +251,16 @@ const fishFrag = `
   }`;
 
 async function loadFish(id) {
-  const buf = await (await fetch(`./${id}.bin`)).arrayBuffer();
-  const n = new Uint32Array(buf, 0, 1)[0];
+  const url = new URL(`./${id}.bin`, import.meta.url);
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Creature ${id}: HTTP ${response.status} (${url.pathname})`);
+  const buf = await response.arrayBuffer();
+  if (buf.byteLength < 4) throw new Error(`Creature ${id}: file too short (${buf.byteLength} bytes)`);
+  const n = new DataView(buf).getUint32(0, true);
+  const expectedBytes = 4 + n * 18;
+  if (!n || buf.byteLength !== expectedBytes) {
+    throw new Error(`Creature ${id}: invalid BIN; particles=${n}, bytes=${buf.byteLength}, expected=${expectedBytes}`);
+  }
   let o = 4;
   const pb = new Int16Array(buf, o, n * 3); o += n * 6;
   const ps = new Int16Array(buf, o, n * 3); o += n * 6;
@@ -265,7 +279,8 @@ async function loadFish(id) {
       uMorph: { value: 0 }, uTime: { value: 0 }, uKick: { value: 0 }, uWave: { value: 0.03 }, uSwim: { value: 1.2 },
       uTurn: { value: 0 }, uGlitch: { value: 0 }, uSize: { value: MOBILE ? 0.02 : 0.013 }, uPix: { value: 1 },
       uSleep: { value: 1 }, uScan: { value: -9 }, uScanAmt: { value: 0 }, uVis: { value: 1 },
-      uLens: { value: 0 }, uAspect: { value: 1 }, uMouse: { value: new THREE.Vector2(9, 9) },
+      uLens: { value: 0 }, uAspect: { value: 1 }, uGreen: { value: id === '01-melanocetus' ? 0.58 : 0 },
+      uMouse: { value: new THREE.Vector2(9, 9) },
     },
   });
   const pts = new THREE.Points(g, m);
@@ -567,7 +582,7 @@ canvas.addEventListener('wheel', e => {
 
 // ---------------------------------------------------------------- grabar y compartir
 // Se graba un lienzo 9:16 (formato de Instagram/TikTok): cada cuadro del visual recortado al centro + marca de agua.
-const SITE = 'Microcosmonauta';
+const SITE = 'Mikrokosmonaut';
 document.fonts?.load("72px 'Jacquard 12'");   // la marca de agua la necesita cargada antes de grabar
 const REC_MAX = 60;
 const recCv = document.createElement('canvas');
@@ -587,7 +602,7 @@ function drawRecFrame() {
   const u = W / 1080;
   recCtx.fillStyle = 'rgba(232,236,239,0.9)';
   recCtx.font = `200 ${30 * u}px Manrope`;
-  recCtx.fillText('Microcosmonauta', 54 * u, H - 120 * u);
+  recCtx.fillText('Mikrokosmonaut', 54 * u, H - 120 * u);
   recCtx.font = `${72 * u}px 'Jacquard 12', Manrope`;
   recCtx.fillText('Criaturas Abisales', 54 * u, H - 64 * u);
   recCtx.fillStyle = 'rgba(232,236,239,0.55)';
@@ -598,7 +613,7 @@ function drawRecFrame() {
 function caption() {
   const tr = specimens[current]?.track;
   return t('caption', tr ? tr.name : 'Criaturas Abisales', 'Criaturas Abisales', SITE, t('makeYours')) +
-         '\n#Microcosmonauta #audiovisual';
+         '\n#Mikrokosmonaut #audiovisual';
 }
 function startRec() {
   if (recorder || state !== 'abismo') return;
@@ -690,9 +705,17 @@ function enterFish(i) {
 function playTrack(i) {
   energyBase = 0;
   const t = specimens[i].track;
-  if (i === 0 && window.microTrack01Url) { audio.src = window.microTrack01Url; audio.play().catch(() => setPlayIcon(false)); }
-  else if (i === 0) { audio.pause(); audio.removeAttribute('src'); audio.load(); document.getElementById('pName').textContent = t.name + ' · add your audio'; }
-  else { audio.pause(); audio.removeAttribute('src'); audio.load(); }
+  if (i === 0 && window.microTrack01Url) {
+    audio.src = window.microTrack01Url;
+    audio.play().catch(() => setPlayIcon(false));
+  } else if (i === 1 && window.microTrack02Url) {
+    audio.src = window.microTrack02Url;
+    audio.play().catch(() => setPlayIcon(false));
+  } else {
+    audio.pause();
+    audio.removeAttribute('src');
+    audio.load();
+  }
   document.getElementById('pNum').textContent = t.n;
   document.getElementById('pName').textContent = t.name;
   setPlayIcon(true);
@@ -903,6 +926,9 @@ function tick() {
 
 if (window.__dbg) Object.assign(window.__dbg, { tick: () => { const r = requestAnimationFrame; window.requestAnimationFrame = () => 0; tick(); window.requestAnimationFrame = r; }, enterFish, nextTrack, backHome, setFx, fx, ptr, orbit, nav, getState: () => ({ state, current }) });
 build().then(() => requestAnimationFrame(tick)).catch(err => {
-  document.getElementById('loading').textContent = t('loadFail');
-  console.error(err);
+  const message = err instanceof Error ? err.message : String(err);
+  const loading = document.getElementById('loading');
+  loading.textContent = `${t('loadFail')} · ${message}`;
+  loading.classList.remove('done');
+  console.error('[Traumdeuter startup]', err);
 });

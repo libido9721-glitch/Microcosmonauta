@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Traumdeuter — Mikrokosmonaut</title>
-  <meta name="description" content="Traumdeuter — an audiovisual world by Microcosmonauta.">
-  <meta property="og:title" content="Traumdeuter — Microcosmonauta">
-  <meta property="og:description" content="Traumdeuter — an audiovisual world by Microcosmonauta.">
+  <meta name="description" content="Traumdeuter — an audiovisual world by Mikrokosmonaut.">
+  <meta property="og:title" content="Traumdeuter — Mikrokosmonaut">
+  <meta property="og:description" content="Traumdeuter — an audiovisual world by Mikrokosmonaut.">
   <meta property="og:image" content="">
   <meta name="theme-color" content="#000000">
   <link rel="icon" href="/favicon.svg">
@@ -28,9 +28,9 @@
   <canvas id="gl"></canvas>
 
   <header class="head">
-    <a class="wordmark" href="./">Microcosmonauta</a>
+    <a class="wordmark" href="./">Mikrokosmonaut</a>
     <h1 class="title">Traumdeuter</h1>
-    <p class="cat">Microcosmonauta · audiovisuelle Traumwelt</p>
+    <p class="cat">Mikrokosmonaut · audiovisuelle Traumwelt</p>
   </header>
 
   <div id="tags"></div>
@@ -41,8 +41,6 @@
     <a id="apple" class="soon" href="#">Apple Music · link pending</a>
     <a id="amazon" class="soon" href="#">Amazon Music · optional</a>
   </nav>
-  <input id="track01File" type="file" accept="audio/*,.m4a,.mp3,.wav" hidden>
-  <button id="loadTrack01" type="button" style="position:fixed;left:18px;top:78px;z-index:25;background:rgba(0,0,0,.55);color:#e8ecef;border:1px solid rgba(232,236,239,.25);padding:7px 10px;font:700 10px Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer">Replace Track 01 audio</button>
 
   <section class="player" id="player" aria-hidden="true">
     <div class="now">
@@ -95,7 +93,7 @@
 
   <div class="intro" id="intro" role="dialog" aria-label="Cómo se toca">
     <div class="box">
-      <p class="t" data-i18n="introT">An expanded audiovisual experience by Microcosmonauta</p>
+      <p class="t" data-i18n="introT">An expanded audiovisual experience by Mikrokosmonaut</p>
       <p class="lead" data-i18n="introLead">En la profundidad siempre es de noche. La luz emerge de sus criaturas cuando se dejan ver.</p>
       <p data-i18n="introTouch">Toca una criatura: suena su canción y entras a su visual.</p>
       <p class="desk" data-i18n="introDesk">Arrastra para mirar y nada con la rueda o las flechas. Dentro: mueve el cursor, mantén presionado, arrastra.</p>
@@ -113,13 +111,7 @@
   <script src="./obra-expandida.js" data-obra="criaturas-abisales" defer></script>
   <script type="module" src="./app.js"></script>
 <!-- Cloudflare Pages Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b28d07dbf25547c4a48debe0b569240c"}'></script><!-- Cloudflare Pages Analytics -->
-<script>
-(() => {
- const input=document.getElementById('track01File'), btn=document.getElementById('loadTrack01');
- btn?.addEventListener('click',()=>input?.click());
- input?.addEventListener('change',()=>{const f=input.files?.[0];if(!f)return;if(window.microTrack01Url)URL.revokeObjectURL(window.microTrack01Url);window.microTrack01Url=URL.createObjectURL(f);btn.textContent='Track 01 ready · '+f.name;btn.style.borderColor='rgba(150,240,210,.8)';});
-})();
-</script>
+
 
 </body>
 </html>
