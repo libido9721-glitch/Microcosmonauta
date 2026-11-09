@@ -602,9 +602,9 @@ function drawRecFrame() {
   const u = W / 1080;
   recCtx.fillStyle = 'rgba(232,236,239,0.9)';
   recCtx.font = `200 ${30 * u}px Manrope`;
-  recCtx.fillText('Mikrokosmonaut', 54 * u, H - 120 * u);
+  recCtx.fillText('Mikrokosmonaut', 54 * u, 132 * u);
   recCtx.font = `${72 * u}px 'Jacquard 12', Manrope`;
-  recCtx.fillText('Criaturas Abisales', 54 * u, H - 64 * u);
+  recCtx.fillText('Traumdeuter', 54 * u, 210 * u);
   recCtx.fillStyle = 'rgba(232,236,239,0.55)';
   recCtx.font = `700 ${18 * u}px Manrope`;
   const tr = specimens[current]?.track;
