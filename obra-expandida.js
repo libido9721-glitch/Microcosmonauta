@@ -43,7 +43,7 @@
       sharedCopied: 'The text is copied: paste it in your post.',
       downloaded: c => `Your video was downloaded${c ? ' and the text is copied' : ''}. Upload it to Instagram or TikTok${c ? ' and paste the text' : ''}.`,
       noRec: 'This browser can’t record video. Try Chrome or Safari.',
-      caption: (track, n, url, verb) => `I played “${track}” on ${n}, an expanded work by Traumdeuter.\n${verb}: ${url}\nInstagram @traumdeuter.music · TikTok @traumdeuter`,
+      caption: (track, n, url, verb) => `I played “${track}” in an audiovisual dreamworld by Traumdeuter.\n${verb}: ${url}\nInstagram @traumdeuter.music · TikTok @traumdeuter`,
     },
     de: {
       buy: 'Auf Spotify hören', buyShort: 'Hören', spotify: 'Auf Spotify öffnen', apple: 'Auf Apple Music öffnen',
