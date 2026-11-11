@@ -5,7 +5,7 @@
 (() => {
   const BANDCAMP_ARTISTA = ''; // Microcosmonauta: links propios se añadirán cuando estén disponibles
   const OBRAS = {
-    'criaturas-abisales':   { name: 'Microcosmonauta', cat: 'Interactive audiovisual experience', spotify: '', apple: '', youtube: '', amazon: '' },
+    'criaturas-abisales':   { name: 'Traumdeuter', cat: 'Interactive audiovisual experience', spotify: '', apple: '', youtube: '', amazon: '' },
     'un-cielo-de-agujeros': { name: 'un cielo de agujeros', cat: 'Fósforo · FSF-018', bandcamp: 'https://fantasm0genesis.bandcamp.com/album/un-cielo-de-agujeros', spotify: '', apple: '' },
     'membranas':            { name: 'membranas', cat: 'Fósforo · FSF-019', bandcamp: 'https://fantasm0genesis.bandcamp.com/album/membranas', soundcloud: 'https://soundcloud.com/Microcosmonauta/sets/membranas', spotify: '', apple: '' },
   };
@@ -20,8 +20,8 @@
     es: {
       buy: 'Comprar en Bandcamp', buyShort: 'Comprar', spotify: 'Guardar en Spotify', apple: 'Guardar en Apple Music',
       about: 'Acerca', aboutLabel: 'Acerca de esta obra', close: 'Cerrar', lang: 'Idioma',
-      aboutP1: n => `${n} es una obra expandida de Microcosmonauta: un EP que también es un visual que reacciona a la música. Lo puedes tocar desde tu compu o tu celular, grabarlo y compartirlo.`,
-      aboutP2: 'Música y grabaciones de Microcosmonauta.',
+      aboutP1: n => `${n} es una obra expandida de Traumdeuter: un EP que también es un visual que reacciona a la música. Lo puedes tocar desde tu compu o tu celular, grabarlo y compartirlo.`,
+      aboutP2: 'Música y grabaciones de Traumdeuter.',
       aboutStream: 'Los enlaces oficiales de escucha se añadirán aquí.',
       aboutSoon: 'Los enlaces oficiales de escucha se añadirán aquí cuando estén disponibles.',
       share: 'Compartir', download: 'Descargar', copy: 'Copiar texto', copied: 'Copiado',
@@ -29,13 +29,13 @@
       sharedCopied: 'El texto quedó copiado: pégalo en tu publicación.',
       downloaded: c => `Se descargó tu video${c ? ' y el texto quedó copiado' : ''}. Súbelo a Instagram o TikTok${c ? ' y pega el texto' : ''}.`,
       noRec: 'Este navegador no puede grabar video. Prueba en Chrome o Safari.',
-      caption: (track, n, url, verb) => `Toqué «${track}» en ${n}, una obra expandida de Microcosmonauta.\n${verb}: ${url}\nInstagram @fantasm0genesis · TikTok @Microcosmonauta`,
+      caption: (track, n, url, verb) => `Toqué «${track}» en ${n}, una obra expandida de Traumdeuter.\n${verb}: ${url}\nInstagram @fantasm0genesis · TikTok @Microcosmonauta`,
     },
     en: {
       buy: 'Listen', buyShort: 'Listen', spotify: 'Listen on Spotify', apple: 'Listen on Apple Music',
       about: 'About', aboutLabel: 'About this work', close: 'Close', lang: 'Language',
-      aboutP1: n => `${n} is an expanded work by Microcosmonauta: an EP that is also a visual that reacts to the music. You can play it from your computer or phone, record it and share it.`,
-      aboutP2: 'Music and recordings by Microcosmonauta.',
+      aboutP1: n => `${n} is an expanded work by Traumdeuter: an EP that is also a visual that reacts to the music. You can play it from your computer or phone, record it and share it.`,
+      aboutP2: 'Music and recordings by Traumdeuter.',
       aboutStream: 'Official listening links will appear here when available.',
       aboutSoon: 'Official listening links will appear here when available.',
       share: 'Share', download: 'Download', copy: 'Copy text', copied: 'Copied',
@@ -43,13 +43,13 @@
       sharedCopied: 'The text is copied: paste it in your post.',
       downloaded: c => `Your video was downloaded${c ? ' and the text is copied' : ''}. Upload it to Instagram or TikTok${c ? ' and paste the text' : ''}.`,
       noRec: 'This browser can’t record video. Try Chrome or Safari.',
-      caption: (track, n, url, verb) => `I played “${track}” on ${n}, an expanded work by Microcosmonauta.\n${verb}: ${url}\nInstagram @fantasm0genesis · TikTok @Microcosmonauta`,
+      caption: (track, n, url, verb) => `I played “${track}” on ${n}, an expanded work by Traumdeuter.\n${verb}: ${url}\nInstagram @traumdeuter.music · TikTok @traumdeuter`,
     },
     de: {
       buy: 'Auf Spotify hören', buyShort: 'Hören', spotify: 'Auf Spotify öffnen', apple: 'Auf Apple Music öffnen',
       about: 'Info', aboutLabel: 'Über dieses Projekt', close: 'Schließen', lang: 'Sprache',
       aboutP1: n => `${n} ist ein interaktives audiovisuelles Projekt: ein Klangwerk, das zugleich eine auf Musik reagierende visuelle Erfahrung ist. Du kannst es am Computer oder Smartphone erkunden, aufnehmen und teilen.`,
-      aboutP2: 'Musik und Aufnahmen von Microcosmonauta.',
+      aboutP2: 'Musik und Aufnahmen von Traumdeuter.',
       aboutStream: 'Höre das Projekt auf Spotify oder Apple Music.',
       aboutSoon: 'Musiklinks werden ergänzt, sobald sie verfügbar sind.',
       share: 'Teilen', download: 'Herunterladen', copy: 'Text kopieren', copied: 'Kopiert',
@@ -199,7 +199,7 @@
     const a = (href, icon, label, cls = '') => `<a class="${cls}" href="${href}" target="_blank" rel="noopener">${ICON[icon]}${label}</a>`;
     aboutEl.querySelector('.card').innerHTML =
       `<button class="x" aria-label="${t('close')}">×</button>` +
-      `<p class="k">Microcosmonauta${links.cat ? ' · ' + links.cat : ''}</p>` +
+      `<p class="k">Traumdeuter${links.cat ? ' · ' + links.cat : ''}</p>` +
       `<h2>${links.name}</h2>` +
       `<p>${t('aboutP1', links.name)}</p><p>${t('aboutP2')}</p><p>${t(stream ? 'aboutStream' : 'aboutSoon')}</p>` +
       `<div class="acts">` +
