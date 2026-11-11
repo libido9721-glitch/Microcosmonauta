@@ -7,7 +7,7 @@
   const OBRAS = {
     'criaturas-abisales':   { name: 'Traumdeuter', cat: 'Interactive audiovisual experience', spotify: '', apple: '', youtube: '', amazon: '' },
     'un-cielo-de-agujeros': { name: 'un cielo de agujeros', cat: 'Fósforo · FSF-018', bandcamp: 'https://fantasm0genesis.bandcamp.com/album/un-cielo-de-agujeros', spotify: '', apple: '' },
-    'membranas':            { name: 'membranas', cat: 'Fósforo · FSF-019', bandcamp: 'https://fantasm0genesis.bandcamp.com/album/membranas', soundcloud: 'https://soundcloud.com/Microcosmonauta/sets/membranas', spotify: '', apple: '' },
+    'membranas':            { name: 'membranas', cat: 'Fósforo · FSF-019', bandcamp: 'https://fantasm0genesis.bandcamp.com/album/membranas', spotify: '', apple: '' },
   };
   const obra = document.currentScript?.dataset.obra || '';
   const info = OBRAS[obra] || { name: document.title, cat: '' };
@@ -29,7 +29,7 @@
       sharedCopied: 'El texto quedó copiado: pégalo en tu publicación.',
       downloaded: c => `Se descargó tu video${c ? ' y el texto quedó copiado' : ''}. Súbelo a Instagram o TikTok${c ? ' y pega el texto' : ''}.`,
       noRec: 'Este navegador no puede grabar video. Prueba en Chrome o Safari.',
-      caption: (track, n, url, verb) => `Toqué «${track}» en ${n}, una obra expandida de Traumdeuter.\n${verb}: ${url}\nInstagram @fantasm0genesis · TikTok @Microcosmonauta`,
+      caption: (track, n, url, verb) => `Toqué «${track}» en ${n}, una obra expandida de Traumdeuter.\n${verb}: ${url}\nInstagram @traumdeuter.music · TikTok @traumdeuter`,
     },
     en: {
       buy: 'Listen', buyShort: 'Listen', spotify: 'Listen on Spotify', apple: 'Listen on Apple Music',
