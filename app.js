@@ -602,13 +602,13 @@ function drawRecFrame() {
   const u = W / 1080;
   recCtx.fillStyle = 'rgba(232,236,239,0.9)';
   recCtx.font = `200 ${30 * u}px Manrope`;
-  recCtx.fillText('Traumdeuter', 54 * u, 132 * u);
+  
   recCtx.font = `${72 * u}px 'Jacquard 12', Manrope`;
   recCtx.fillText('Traumdeuter', 54 * u, 210 * u);
   recCtx.fillStyle = 'rgba(232,236,239,0.55)';
   recCtx.font = `700 ${18 * u}px Manrope`;
   const tr = specimens[current]?.track;
-  recCtx.fillText(`${tr ? tr.n + ' · ' + tr.name.toUpperCase() + '   ' : ''}${SITE.toUpperCase()}`, 54 * u, 246 * u);
+recCtx.fillText(`${tr ? tr.n + ' · ' + tr.name.toUpperCase() : ''}`, 54 * u, 246 * u);
 }
 function caption() {
   const tr = specimens[current]?.track;
