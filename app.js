@@ -32,13 +32,13 @@ window.fgObra?.i18n({
   es: { makeYours: 'Haz tu propia criatura', loadFail: 'no se pudo cargar',
         webm: 'Este navegador graba en WebM: Instagram no lo acepta, conviértelo o graba desde Chrome/Safari reciente. ' },
   en: { soon: 'soon', back: 'Back', fxMirror: 'mirror', fxEdges: 'edges', yours: 'Your creature', keep: 'Keep playing',
-        introT: 'An expanded audiovisual experience by Mikrokosmonaut',
+        introT: 'An expanded audiovisual dreamworld by Traumdeuter',
         introLead: 'In the deep it is always night. Light comes from its creatures when they let themselves be seen.',
         introTouch: 'Touch a creature: its song plays and you enter its visual.',
         introDesk: 'Drag to look around and swim with the wheel or the arrow keys. Inside: move the cursor, press and hold, drag.',
         introPads: 'mirror · feedback · glitch · edges',
         introMobile: 'Drag to look around and pinch to swim. Inside: swipe, keep your finger still and turn on the effects.',
-        introRec: 'Record what you make <span class="desk">with <kbd>R</kbd></span> and share it tagging Mikrokosmonaut',
+        introRec: 'Record what you make <span class="desk">with <kbd>R</kbd></span> and share it tagging Traumdeuter',
         enter: 'Enter', loading: 'loading specimens', loadFail: 'could not load', makeYours: 'Make your own creature',
         webm: 'This browser records in WebM, which Instagram doesn’t accept: convert it or record from a recent Chrome or Safari. ' },
   de: { soon: 'demnächst', back: 'Zurück', fxMirror: 'Spiegel', fxEdges: 'Konturen', yours: 'Deine Kreatur', keep: 'Weiter erkunden',
@@ -582,7 +582,7 @@ canvas.addEventListener('wheel', e => {
 
 // ---------------------------------------------------------------- grabar y compartir
 // Se graba un lienzo 9:16 (formato de Instagram/TikTok): cada cuadro del visual recortado al centro + marca de agua.
-const SITE = 'Mikrokosmonaut';
+const SITE = 'Traumdeuter';
 document.fonts?.load("72px 'Jacquard 12'");   // la marca de agua la necesita cargada antes de grabar
 const REC_MAX = 60;
 const recCv = document.createElement('canvas');
@@ -602,7 +602,7 @@ function drawRecFrame() {
   const u = W / 1080;
   recCtx.fillStyle = 'rgba(232,236,239,0.9)';
   recCtx.font = `200 ${30 * u}px Manrope`;
-  recCtx.fillText('Mikrokosmonaut', 54 * u, 132 * u);
+  recCtx.fillText('Traumdeuter', 54 * u, 132 * u);
   recCtx.font = `${72 * u}px 'Jacquard 12', Manrope`;
   recCtx.fillText('Traumdeuter', 54 * u, 210 * u);
   recCtx.fillStyle = 'rgba(232,236,239,0.55)';
@@ -612,8 +612,8 @@ function drawRecFrame() {
 }
 function caption() {
   const tr = specimens[current]?.track;
-  return t('caption', tr ? tr.name : 'Criaturas Abisales', 'Criaturas Abisales', SITE, t('makeYours')) +
-         '\n#Mikrokosmonaut #audiovisual';
+  return t('caption', tr ? tr.name : 'Traumdeuter', 'Traumdeuter', SITE, t('makeYours')) +
+         '\n#Traumdeuter #audiovisual';
 }
 function startRec() {
   if (recorder || state !== 'abismo') return;
@@ -655,7 +655,7 @@ async function copyCaption() { try { await navigator.clipboard.writeText(caption
 document.getElementById('bRec').onclick = () => (recorder ? stopRec() : startRec());
 addEventListener('keydown', e => { if (e.key.toLowerCase() === 'r' && !e.repeat && !e.metaKey && !e.ctrlKey && state === 'abismo') recorder ? stopRec() : startRec(); });
 document.getElementById('bShare').onclick = async () => {
-  const note = await window.fgObra?.compartir(recFile, caption(), 'Criaturas Abisales');
+  const note = await window.fgObra?.compartir(recFile, caption(), 'Traumdeuter');
   if (note) document.getElementById('shareNote').textContent = note;
 };
 document.getElementById('bCopy').onclick = async e => { if (await copyCaption()) e.currentTarget.textContent = t('copied'); };
