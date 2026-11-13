@@ -32,7 +32,7 @@ window.fgObra?.i18n({
   es: { makeYours: 'Haz tu propia criatura', loadFail: 'no se pudo cargar',
         webm: 'Este navegador graba en WebM: Instagram no lo acepta, conviértelo o graba desde Chrome/Safari reciente. ' },
   en: { soon: 'soon', back: 'Back', fxMirror: 'mirror', fxEdges: 'edges', yours: 'Your creature', keep: 'Keep playing',
-        introT: 'An expanded audiovisual dreamworld by Traumdeuter',
+        introT: 'An audiovisual dreamworld by Traumdeuter',
         introLead: 'In the deep it is always night. Light comes from its creatures when they let themselves be seen.',
         introTouch: 'Touch a creature: its song plays and you enter its visual.',
         introDesk: 'Drag to look around and swim with the wheel or the arrow keys. Inside: move the cursor, press and hold, drag.',
