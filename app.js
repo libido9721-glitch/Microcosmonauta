@@ -42,7 +42,7 @@ window.fgObra?.i18n({
         enter: 'Enter', loading: 'loading specimens', loadFail: 'could not load', makeYours: 'Make your own creature',
         webm: 'This browser records in WebM, which Instagram doesn’t accept: convert it or record from a recent Chrome or Safari. ' },
   de: { soon: 'demnächst', back: 'Zurück', fxMirror: 'Spiegel', fxEdges: 'Konturen', yours: 'Deine Kreatur', keep: 'Weiter erkunden',
-        introT: 'Ein erweitertes audiovisuelles Erlebnis',
+        introT: 'Eine audiovisuelle Traumwelt von Traumdeuter',
         introLead: 'In der Tiefe ist es immer Nacht. Licht kommt von den Kreaturen, wenn sie sich zeigen.',
         introTouch: 'Berühre eine Kreatur: Ihr Track beginnt und du tauchst in ihre Visualisierung ein.',
         introDesk: 'Ziehe zum Umschauen und bewege dich mit Mausrad oder Pfeiltasten. Im Inneren: Cursor bewegen, halten und ziehen.',
